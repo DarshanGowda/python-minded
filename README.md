@@ -1,0 +1,4 @@
+python-minded
+=============
+
+Everything python
