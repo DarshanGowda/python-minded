@@ -1,0 +1,21 @@
+Code Analyzers(integrating with py-charm)
+
+Add this tools in "External Tools" settings in pycharm IDE settings
+
+1) pylint
+
+  parameters :   --reports=n --output-format=parseable $FilePath$
+  working directory : $Projectpath$
+  output filter : $FILE_PATH$\:$LINE$
+
+2) pep8
+
+  parameters : $FilePath$
+  working directory : $FilePath$
+  output filter : $FILE_PATH$\:$LINE$\:$COLUMN$\:.*
+
+3) pyflakes
+
+  parameters : $FilePath$
+  working directory : $FilePath$
+  output filter: $FILE_PATH$\:$LINE$
