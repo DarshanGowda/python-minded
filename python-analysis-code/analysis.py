@@ -13,7 +13,6 @@ def get_staged_files():
     proc = subprocess.Popen(('git', 'status', '--porcelain'), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, _ = proc.communicate()
     staged_files = re.findall(r'^[AM]\s+(.*\.py)', out, re.MULTILINE)
-    print staged_files
     return staged_files
 
 
