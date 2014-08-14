@@ -26,9 +26,7 @@ def validate_with_analysis_tools():
         proc = subprocess.Popen([CONFIG['Analysis_tool'], os.path.abspath(each_staged_files)], stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE)
         report, _ = proc.communicate()
-        generated_report += "Starting report for %s" % each_staged_files
         generated_report += report
-        generated_report += "Ending report for %s" % each_staged_files
 
     if generated_report:
         print generated_report
