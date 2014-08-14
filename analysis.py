@@ -20,7 +20,7 @@ def validate_with_analysis_tools():
     validates staged file with analysis tool and
     generates report
     """
-    generated_report = ''
+    generated_report=''
     staged_files = get_staged_files()
     for each_staged_files in staged_files:
         proc = subprocess.Popen([CONFIG['Analysis_tool'], os.path.abspath(each_staged_files)], stdout=subprocess.PIPE,
@@ -30,7 +30,10 @@ def validate_with_analysis_tools():
         generated_report += report
         generated_report += "Ending report for %s" % each_staged_files
 
-    print generated_report
+    if generated_report:
+        print generated_report
+        exit(1)
+
 
 if __name__ == '__main__':
     validate_with_analysis_tools()
