@@ -11,7 +11,7 @@ def get_staged_files():
     """
     proc = subprocess.Popen(('git', 'status', '--porcelain'), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, _ = proc.communicate()
-    staged_files = re.findall(r'^[M]\s+(.*\.py)', out, re.MULTILINE)
+    staged_files = re.findall(r'^M{1,2}\s+(.*\.py)', out, re.MULTILINE)
     return staged_files
 
 
@@ -26,11 +26,11 @@ def validate_with_analysis_tools():
         proc = subprocess.Popen([CONFIG['Analysis_tool'], os.path.abspath(each_staged_files)], stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE)
         report, _ = proc.communicate()
-        generated_report += "Starting report for %s" % each_staged_files
         generated_report += report
-        generated_report += "Ending report for %s" % each_staged_files
 
-    print generated_report
+    if generated_report:
+        print generated_report
+        exit(1)
 
 if __name__ == '__main__':
     validate_with_analysis_tools()
