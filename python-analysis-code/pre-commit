@@ -1,3 +1,4 @@
 #!/bin/bash
+#give full path or obsolute path of analysis.py file to python
 
-python analysis.py
+python python-analysis-code/analysis.py
