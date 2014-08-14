@@ -32,5 +32,6 @@ def validate_with_analysis_tools():
         print generated_report
         exit(1)
 
+
 if __name__ == '__main__':
     validate_with_analysis_tools()
