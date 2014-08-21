@@ -1,8 +1,6 @@
 import copy
 import random
 
-#sample_list = [1, 1, 1, 2, 2, 3, 5, 7, 9, 10, 11, 12, 17, 18, 21, 25, 27]  # sample list
-
 sample_list = [random.randrange(0, 100) for item in range(100)]
 
 sample_list = sorted(sample_list)
