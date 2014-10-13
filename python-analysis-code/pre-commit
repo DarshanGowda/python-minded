@@ -7,7 +7,7 @@ from sys import exit
 from ConfigParser import SafeConfigParser
 
 CONFIG_FILE = "pre_commit.cfg"
-EXCLUDE_PATTERNS = ["from .* import \*"]
+EXCLUDE_PATTERNS = ["import \*"]
 
 def get_staged_files():
     """
