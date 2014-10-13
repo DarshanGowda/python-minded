@@ -35,7 +35,7 @@ def validate_with_analysis_tools(parser):
         pyflakes_total_report.extend(pyflakes_report.split("\n"))
 
     for issue in pyflakes_total_report:
-        if not True in [True for pattern in EXCLUDE_PATTERNS if re.findall(pattern, issue)]:
+        if all([re.findall(pattern, issue) == [] for pattern in EXCLUDE_PATTERNS]):
             pyflakes_after_exclusion.append(issue)
 
     if pyflakes_after_exclusion:
