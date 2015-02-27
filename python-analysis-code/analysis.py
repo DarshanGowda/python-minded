@@ -13,16 +13,19 @@ def get_staged_files():
     proc = subprocess.Popen(('git', 'status', '--porcelain'), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, _ = proc.communicate()
     staged_files = re.findall(r'^[AM]\s+(.*\.py)', out, re.MULTILINE)
+    import pdb;pdb.set_trace()
+    print staged_files
     return staged_files
 
 
 def validate_with_analysis_tools():
+    print __name__
     """
     validates staged file with analysis tool and
     generates report
     """
     pep_generated_report = ''
-    pyflakes_generated_report = ''
+    pyflakes_generated_report=''
     staged_files = get_staged_files()
     for each_staged_files in staged_files:
         proc1 = subprocess.Popen([CONFIG['Analysis_tool1'], os.path.abspath(each_staged_files)], stdout=subprocess.PIPE,
@@ -30,8 +33,11 @@ def validate_with_analysis_tools():
         proc2 = subprocess.Popen([CONFIG['Analysis_tool2'], os.path.abspath(each_staged_files)], stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE)
 
-        pep_report, _ = proc1.communicate()
-        pyflakes_report, _ = proc2.communicate()
+        a, _ = ('11', '')
+        print proc1.communicate()
+        pep_report, ww = proc1.communicate()
+        pyflakes_report, xx = proc2.communicate()
+        #print "the value is %s"%(_)
         pep_generated_report += pep_report
         pyflakes_generated_report += pyflakes_report
 
@@ -47,3 +53,4 @@ def validate_with_analysis_tools():
 
 if __name__ == '__main__':
     validate_with_analysis_tools()
+
