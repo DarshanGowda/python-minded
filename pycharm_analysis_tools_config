@@ -11,11 +11,11 @@ Add this tools in "External Tools" settings in pycharm IDE settings
 2) pep8
 
   parameters : $FilePath$
-  working directory : $FilePath$
+  working directory : $ProjectFileDir$
   output filter : $FILE_PATH$\:$LINE$\:$COLUMN$\:.*
 
 3) pyflakes
 
   parameters : $FilePath$
-  working directory : $FilePath$
+  working directory : $ProjectFileDir$
   output filter: $FILE_PATH$\:$LINE$
