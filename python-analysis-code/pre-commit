@@ -1,13 +1,36 @@
 #!/usr/bin/python
+"""
+Git hook to catch pdb issues before committing.
+
+How it works?
+copy file to '/usr/share/git-core/templates/hooks/' then,
+it will automatically copy to .git/hooks whenever new repository is cloned.
+"""
+
+__author__ = 'Darshan RK Gowda'
 
 import subprocess
 import re
 import os
 from sys import exit
-from ConfigParser import SafeConfigParser
 
-CONFIG_FILE = "pre_commit.cfg"
+try:
+    from preCommitPdb import check_for_pdb_violations
+except Exception as err:
+    def check_for_pdb_violations():
+        pass
+    print "OOPS Your staged files missed PDB check, due to ", err
+
+try:
+    from preCommitZopeDateTime import is_zope_datetime_used
+except Exception as err:
+    def is_zope_datetime_used():
+        pass
+    print "OOPS Your staged files missed ZopeDateTime check, due to ", err
+
 EXCLUDE_PATTERNS = "import\s+\*"
+TOOLS = ['pep8', 'pyflakes']
+
 
 def get_staged_files():
     """
@@ -15,34 +38,36 @@ def get_staged_files():
     """
     proc = subprocess.Popen(('git', 'status', '--porcelain'), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, _ = proc.communicate()
-    staged_files = re.findall(r'^[AM]\s+(.*\.py)', out, re.MULTILINE)
+    staged_files = [matched_group[1] for matched_group in re.findall(r'^([AM]|MM)\s+(.*\.py)', out, re.MULTILINE)]
     return staged_files
 
 
-def validate_with_analysis_tools(parser):
+def validate_with_analysis_tools():
     """
     validates staged file with analysis tool and
     generates report
     """
     staged_files = get_staged_files()
-    pyflakes_total_report = ""
-    for each_staged_files in staged_files:
-        proc2 = subprocess.Popen([parser.get("TOOLS", "pyflakes_tool"), \
-            os.path.abspath(each_staged_files)], \
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        pyflakes_report, _ = proc2.communicate()
-        pyflakes_total_report += pyflakes_report
+    violations_report = ""
 
-    pyflakes_after_exclusion = [issue for issue in \
-        pyflakes_total_report.splitlines() if not re.findall(EXCLUDE_PATTERNS, issue)]
+    check_for_pdb_violations()  # checks for pdb violations if any stop from committing
 
-    if pyflakes_after_exclusion:
-        print "***** Commit failed due to below pyflakes errors *****\n"
-        print "\n".join(pyflakes_after_exclusion)
+    for each_tool in TOOLS:
+        for each_staged_files in staged_files:
+            proc2 = subprocess.Popen([each_tool, os.path.abspath(each_staged_files)], stdout=subprocess.PIPE,
+                                     stderr=subprocess.PIPE)
+            violations_report += proc2.communicate()[0]
+
+    violations_report_after_exclusion = [issue for issue in
+                                         violations_report.splitlines() if not re.findall(EXCLUDE_PATTERNS, issue)]
+
+    if violations_report_after_exclusion:
+        print '\033[95m' + "***** Commit failed due to pep8/pyflakes issues in staged files *****\n" + '\033[0m'
+        print "\n".join(violations_report_after_exclusion)
         exit(1)
 
-if __name__ == '__main__':
-    parser = SafeConfigParser()
-    parser.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), CONFIG_FILE))
+    is_zope_datetime_used()  # checks for zope DateTime imports if any stop from committing
 
-    validate_with_analysis_tools(parser)
+
+if __name__ == '__main__':
+    validate_with_analysis_tools()
