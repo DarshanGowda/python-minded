@@ -44,7 +44,8 @@ def is_zope_datetime_used():
     if zope_datetime_report:
         print '\033[95m' + "***** Zope Datetime related imports used in staged files *****\n" + '\033[0m'
         print zope_datetime_report
-        exit(1)
+
+    return
 
 if __name__ == '__main__':
     is_zope_datetime_used()
