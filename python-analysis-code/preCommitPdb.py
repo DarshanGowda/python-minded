@@ -22,8 +22,6 @@ def get_staged_files():
     """
     get all staged files for next commit
     """
-    proc23 = subprocess.Popen('pwd', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    print proc23.communicate()[0]
     proc = subprocess.Popen(('git', 'status', '--porcelain'), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, _ = proc.communicate()
     staged_files = [matched_group[1] for matched_group in re.findall(r'^([AM]|MM)\s+(.*\.py)', out, re.MULTILINE)]
