@@ -15,7 +15,6 @@ __author__ = 'Darshan RK Gowda'
 import subprocess
 import re
 import os
-from sys import exit
 
 
 def get_staged_files():
@@ -28,12 +27,11 @@ def get_staged_files():
     return staged_files
 
 
-def is_zope_datetime_used():
+def is_zope_datetime_used(staged_files):
     """
     validates staged file's for Zope DateTime, if used
     generates report
     """
-    staged_files = get_staged_files()
     zope_datetime_report = ""
 
     for each_staged_files in staged_files:
@@ -48,4 +46,4 @@ def is_zope_datetime_used():
     return
 
 if __name__ == '__main__':
-    is_zope_datetime_used()
+    is_zope_datetime_used(get_staged_files())

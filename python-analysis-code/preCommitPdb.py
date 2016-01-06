@@ -28,12 +28,11 @@ def get_staged_files():
     return staged_files
 
 
-def check_for_pdb_violations():
+def check_for_pdb_violations(staged_files):
     """
     validates staged file's for pdb used, if used
     generates report
     """
-    staged_files = get_staged_files()
     pdb_report = ""
 
     for each_staged_files in staged_files:
@@ -47,4 +46,4 @@ def check_for_pdb_violations():
         exit(1)
 
 if __name__ == '__main__':
-    check_for_pdb_violations()
+    check_for_pdb_violations(get_staged_files())
