@@ -5,6 +5,7 @@ Git hook to catch pdb issues before committing.
 How it works?
 copy file to '/usr/share/git-core/templates/hooks/' then,
 it will automatically copy to .git/hooks whenever new repository is cloned.
+
 """
 
 __author__ = 'Darshan RK Gowda'
@@ -29,12 +30,13 @@ except Exception as err:
         pass
 
     print "OOPS Your staged files missed ZopeDateTime check, due to ", err
-try:
-    from preCommitJvar import is_select_need_tobe_jvar
-except Exception as err:
-    def is_select_need_tobe_jvar():
-        pass
-    print "OOPS Your staged files missed jvar check on select, due to ", err
+
+# try:
+#     from preCommitJvar import is_select_need_tobe_jvar
+# except Exception as err:
+#     def is_select_need_tobe_jvar():
+#         pass
+#     print "OOPS Your staged files missed jvar check on select, due to ", err
 
 EXCLUDE_PATTERNS = "import\s+\*"
 TOOLS = ['pep8', 'pyflakes']
@@ -57,7 +59,7 @@ def validate_with_analysis_tools():
     """
     staged_files = get_staged_files()
     issue_dict = {}
-    check_for_pdb_violations()  # checks for pdb violations if any stop from committing
+    check_for_pdb_violations(staged_files)  # checks for pdb violations if any stop from committing
 
     for each_tool in TOOLS:
         violations_report = ""
@@ -75,9 +77,9 @@ def validate_with_analysis_tools():
             print "\n".join(v)
         exit(1)
 
-    is_zope_datetime_used()  # checks for zope DateTime imports if any print report
+    is_zope_datetime_used(staged_files)  # checks for zope DateTime imports if any print report
 
-    is_select_need_tobe_jvar() # checks for select statement in html and prints in console
+    # is_select_need_tobe_jvar(staged_files) # checks for select statement in html and prints in console
 
 if __name__ == '__main__':
     validate_with_analysis_tools()

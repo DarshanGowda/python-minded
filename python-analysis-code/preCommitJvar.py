@@ -15,7 +15,6 @@ __author__ = 'Darshan RK Gowda'
 import subprocess
 import re
 import os
-from sys import exit
 
 
 def get_staged_files():
@@ -28,12 +27,11 @@ def get_staged_files():
     return staged_files
 
 
-def is_select_need_tobe_jvar():
+def is_select_need_tobe_jvar(staged_files):
     """
     validates staged file's for pdb used, if used
     generates report
     """
-    staged_files = get_staged_files()
     j_var_report = ""
     for each_staged_files in staged_files:
             print each_staged_files
@@ -47,4 +45,4 @@ def is_select_need_tobe_jvar():
 
     return
 if __name__ == '__main__':
-    is_select_need_tobe_jvar()
+    is_select_need_tobe_jvar(get_staged_files())
