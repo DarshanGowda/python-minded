@@ -5,13 +5,13 @@ usage: python scanForSelectInHtml.py jiva.prvportal (scans single repo)
        python scanForSelectInHtml.py jiva.prvportal jiva.mbrportal (scans multiple repo)
        python scanForSelectInHtml.py (scans src/* )
 output:
-        search for select tag under given repos, and list in report
+        search for select tag under given repo's, and list in report
 """
 import glob
-import re
 import os
 import sys
 import report_config
+from bs4 import BeautifulSoup
 
 
 def check_any_dir_exist(html_occurence):
@@ -32,12 +32,22 @@ def get_files_with_select_tag():
         try:
             html_list = check_any_dir_exist(glob.glob('./{0}/*/*/ui/src/*/partials/*'.format(each_repo)))
             for each_html in html_list:
-                matched_patterns = re.findall(r'(<select.*(\n|.)*?</select>)', open(each_html).read(), re.MULTILINE)
-                if len(matched_patterns):
+                soup = BeautifulSoup(open(each_html).read(), 'html.parser')
+                select_group = soup.findAll('select')
+                if select_group:
+                    select_group = ['<p>'+str(each_select)+'</p>' for each_select in select_group]
                     if component_flag:
-                        report_body += report_config.report_repo_heading_header.format(each_repo, each_html, len(matched_patterns), 'coming soon...')
+                        report_body += report_config.report_repo_heading_header.format(each_repo, each_html,
+                                                                                       len(select_group),
+                                                                                       ''.join(map(str,
+                                                                                                   select_group)).replace(
+                                                                                           '<select', 'select'))
                     else:
-                        report_body += report_config.report_repo_value_header.format(each_repo, each_html, len(matched_patterns), 'coming soon...')
+                        report_body += report_config.report_repo_value_header.format(each_repo, each_html,
+                                                                                     len(select_group),
+                                                                                     ''.join(map(str,
+                                                                                                 select_group)).replace(
+                                                                                         '<select', 'select'))
                     component_flag = False
 
         except Exception as e:
