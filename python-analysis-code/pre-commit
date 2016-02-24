@@ -38,17 +38,26 @@ except Exception as err:
 #         pass
 #     print "OOPS Your staged files missed jvar check on select, due to ", err
 
+try:
+    from preCommitJsHint import scan_for_jshint_errors
+except Exception as err:
+    def scan_for_jshint_errors():
+        pass
+    print "OOPS Your staged files missed jshint check on js, due to ", err
+
+
 EXCLUDE_PATTERNS = "import\s+\*"
 TOOLS = ['pep8', 'pyflakes']
 
 
-def get_staged_files():
+def get_staged_files(file_type):
     """
     get all staged files for next commit
     """
+    regex_pattern = r'^([AM]|MM)\s+(.*\.py)' if file_type == "py" else r'^([AM]|MM)\s+(.*\.js)'
     proc = subprocess.Popen(('git', 'status', '--porcelain'), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, _ = proc.communicate()
-    staged_files = [matched_group[1] for matched_group in re.findall(r'^([AM]|MM)\s+(.*\.py)', out, re.MULTILINE)]
+    staged_files = [matched_group[1] for matched_group in re.findall(regex_pattern, out, re.MULTILINE)]
     return staged_files
 
 
@@ -57,7 +66,7 @@ def validate_with_analysis_tools():
     validates staged file with analysis tool and
     generates report
     """
-    staged_files = get_staged_files()
+    staged_files = get_staged_files('py')
     issue_dict = {}
     check_for_pdb_violations(staged_files)  # checks for pdb violations if any stop from committing
 
@@ -80,6 +89,8 @@ def validate_with_analysis_tools():
     is_zope_datetime_used(staged_files)  # checks for zope DateTime imports if any print report
 
     # is_select_need_tobe_jvar(staged_files) # checks for select statement in html and prints in console
+    staged_files = get_staged_files('js')
+    scan_for_jshint_errors(staged_files) # generates jshint errors
 
 if __name__ == '__main__':
     validate_with_analysis_tools()
